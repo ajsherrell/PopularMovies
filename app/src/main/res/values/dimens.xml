@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="error_tv_padding">16dp</dimen>
+    <dimen name="error_tv_textSize">20sp</dimen>
+    <dimen name="progress_bar_width_height">42dp</dimen>
+</resources>
