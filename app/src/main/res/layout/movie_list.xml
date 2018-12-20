@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <ImageView android:id="@+id/grid_movie_poster"
+        android:layout_height="@dimen/movie_poster_size"
+        android:layout_width="@dimen/movie_poster_size"/>
+
+    <!--Should I use this visual divider???-->
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/view_divider_size"
+        android:background="@color/colorPrimaryDark"/>
+
+</GridLayout>
