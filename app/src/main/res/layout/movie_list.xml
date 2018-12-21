@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
 
-    <ImageView android:id="@+id/grid_movie_poster"
-        android:layout_height="@dimen/movie_poster_size"
-        android:layout_width="@dimen/movie_poster_size"/>
+    <ImageView android:id="@+id/movie_list_poster"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
-    <!--Should I use this visual divider???-->
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/view_divider_size"
-        android:background="@color/colorPrimaryDark"/>
-
-</GridLayout>
+</android.support.v7.widget.CardView>
