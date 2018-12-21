@@ -1,6 +1,7 @@
 package com.example.android.popularmovies;
 
 import android.content.Context;
+import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,16 +9,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
+import java.util.List;
 
-    private String[] mMovies;
+public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
+    private static final String TAG = MovieAdapter.class.getSimpleName();
+
+    private List<Image> mMovies;
 
     // on-click handler for Activity/RecyclerView interface
     private final MovieAdapterOnClickHandler mClickHandler;
 
     // interface for on click messages
     public interface MovieAdapterOnClickHandler {
-        void onClick(String clickedMovie);
+        void onClick(Image clickedMovie);
     }
 
     /**
@@ -30,6 +34,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
 
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
         public final ImageView mImageView;
 
         public MovieAdapterViewHolder(View view) {
@@ -44,7 +49,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
          */
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
-            String clickedMovies = mMovies[adapterPosition];
+            Image clickedMovies = mMovies.get(adapterPosition);
             mClickHandler.onClick(clickedMovies);
         }
     }
@@ -68,13 +73,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MovieAdapterViewHolder movieAdapterViewHolder, int i) {
-
+    public void onBindViewHolder(@NonNull MovieAdapterViewHolder movieAdapterViewHolder, int position) {
+        Image currentMovie = mMovies.get(position);
+        MovieAdapterViewHolder.mImageView.setImageResource(currentMovie);
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mMovies.size();
     }
 
 
