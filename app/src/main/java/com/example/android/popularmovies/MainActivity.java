@@ -17,6 +17,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.net.URL;
 
 import static android.support.v7.widget.RecyclerView.*;
@@ -25,6 +27,18 @@ public class MainActivity extends AppCompatActivity
         implements MovieAdapter.MovieAdapterOnClickHandler {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    // my api key
+    private static final String MY_APT_KEY = "7019ac9f2a11e2696ae22a35ebf9b776";
+
+    // URL from Movie database
+    private static final String MOVIE_DATABASE_BASE_URL = "http://api.themoviedb.org/3/movie/";
+
+    // poster size
+    private static final String SIZE = "";
+
+    // the file_path
+    private static final String FILE_PATH = "";
 
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
@@ -96,8 +110,6 @@ public class MainActivity extends AppCompatActivity
             if (strings.length == 0) {
                 return null;
             }
-            String movies = strings[0];
-            URL movieRequestUrl = NetworkUtils.buildUrl(movies);
 
             try {
                 //todo json
@@ -106,6 +118,7 @@ public class MainActivity extends AppCompatActivity
                 e.printStackTrace();
                 return null;
             }
+            return null;
         }
 
         @Override
@@ -113,7 +126,8 @@ public class MainActivity extends AppCompatActivity
             mProgressBar.setVisibility(INVISIBLE);
             if (moviePosters != null) {
                 showMoviePosterData();
-                //todo ????mMovieAdapter.setMovie
+                Picasso.with(this, .load("http://i.imgur.com/Dvpvk1R.png")
+                        .into(R.id.movie_list_poster);
             } else {
                 showErrorMessage();
             }
