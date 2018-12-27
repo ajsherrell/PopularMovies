@@ -1,19 +1,20 @@
 package com.example.android.popularmovies.model;
 
-import android.widget.ImageView;
 
 public class Movie {
 
+    private int mMovieId;
     private String mOriginalTitle;
-    private ImageView mPosterThumbnail;
+    private String mPosterThumbnail;
     private String mPlotOverview;
     private String mUserRating;
     private String mReleaseDate;
 
     public Movie() {}
 
-    public Movie(String originalTitle, ImageView posterThumbnail, String plotOverview,
+    public Movie(int MovieID, String originalTitle, String posterThumbnail, String plotOverview,
                  String userRating, String releaseDate) {
+        this.mMovieId = MovieID;
         this.mOriginalTitle = originalTitle;
         this.mPosterThumbnail = posterThumbnail;
         this.mPlotOverview = plotOverview;
@@ -29,11 +30,11 @@ public class Movie {
         this.mOriginalTitle = OriginalTitle;
     }
 
-    public ImageView getPosterThumbnail() {
+    public String getPosterThumbnail() {
         return mPosterThumbnail;
     }
 
-    public void setPosterThumbnail(ImageView PosterThumbnail) {
+    public void setPosterThumbnail(String PosterThumbnail) {
         this.mPosterThumbnail = PosterThumbnail;
     }
 
@@ -59,5 +60,13 @@ public class Movie {
 
     public void setReleaseDate(String ReleaseDate) {
         this.mReleaseDate = ReleaseDate;
+    }
+
+    public int getMovieId() {
+        return mMovieId;
+    }
+
+    public void setMovieId(int MovieId) {
+        this.mMovieId = MovieId;
     }
 }

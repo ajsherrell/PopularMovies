@@ -1,7 +1,6 @@
 package com.example.android.popularmovies;
 
 import android.content.Context;
-import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,19 +8,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.android.popularmovies.model.Movie;
+
 import java.util.List;
+
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
     private static final String TAG = MovieAdapter.class.getSimpleName();
-
-    private List<Image> mMovies;
-
-    // on-click handler for Activity/RecyclerView interface
     private final MovieAdapterOnClickHandler mClickHandler;
+    private List<Movie> mMovies;
 
     // interface for on click messages
     public interface MovieAdapterOnClickHandler {
-        void onClick(Image clickedMovie);
+        void onClick(Movie clickedMovie);
     }
 
     /**
@@ -35,11 +34,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public final ImageView mImageView;
+        public static ImageView mImageView;
 
         public MovieAdapterViewHolder(View view) {
             super(view);
-            mImageView = (ImageView) view.findViewById(R.id.grid_movie_poster);
+            mImageView = (ImageView) view.findViewById(R.id.movie_poster_image_thumbnail);
             view.setOnClickListener(this);
         }
 
@@ -49,7 +48,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
          */
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
-            Image clickedMovies = mMovies.get(adapterPosition);
+            Movie clickedMovies = mMovies.get(adapterPosition);
             mClickHandler.onClick(clickedMovies);
         }
     }
@@ -74,13 +73,21 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     @Override
     public void onBindViewHolder(@NonNull MovieAdapterViewHolder movieAdapterViewHolder, int position) {
-        Image currentMovie = mMovies.get(position);
+        Movie currentMovie = mMovies.get(position);
         MovieAdapterViewHolder.mImageView.setImageResource(currentMovie);
     }
 
     @Override
     public int getItemCount() {
+        if (mMovies == null) {
+            return 0;
+        }
         return mMovies.size();
+    }
+
+    public void setMovieData(List<Movie> movies) {
+        mMovies = movies;
+        notifyDataSetChanged();
     }
 
 

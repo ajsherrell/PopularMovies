@@ -14,36 +14,34 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.android.popularmovies.Utilities.JSONUtils;
+import com.example.android.popularmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
+import java.util.List;
 
 import static android.support.v7.widget.RecyclerView.*;
+import static com.example.android.popularmovies.Utilities.JSONUtils.createUrl;
+import static com.example.android.popularmovies.Utilities.JSONUtils.fetchMovieData;
 
 public class MainActivity extends AppCompatActivity
-        implements MovieAdapter.MovieAdapterOnClickHandler {
+        implements MovieAdapterOnClickHandler {
+
+    Context context;
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    // my api key
-    private static final String MY_APT_KEY = "7019ac9f2a11e2696ae22a35ebf9b776";
-
-    // URL from Movie database
-    private static final String MOVIE_DATABASE_BASE_URL = "http://api.themoviedb.org/3/movie/";
-
-    // poster size
-    private static final String SIZE = "";
-
-    // the file_path
-    private static final String FILE_PATH = "";
 
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
     private TextView mErrorMessageDisplay;
     private ProgressBar mProgressBar;
+    private ImageView mImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +52,10 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView = (RecyclerView)findViewById(R.id.recyclerview_movies);
         mErrorMessageDisplay = (TextView)findViewById(R.id.tv_error_message_display);
         mProgressBar = (ProgressBar)findViewById(R.id.pb_loading_indicator);
+        mImageView = (ImageView)findViewById(R.id.movie_list_poster);
 
-        LayoutManager layoutManager = new GridLayoutManager(this, 5);
+
+        LayoutManager layoutManager = new GridLayoutManager(this, 2);
 
         mRecyclerView.setLayoutManager(layoutManager);
 
@@ -72,17 +72,17 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onClick(Image clickedMovie) {
+    public void onClick(String clickedMovie) {
         Context context = this;
         Class destinationClass = MovieDetails.class;
         Intent intentToStartMovieDetails = new Intent(context, destinationClass);
-        intentToStartMovieDetails.putExtra(Intent.EXTRA_TEXT, (Parcelable) clickedMovie);
+        intentToStartMovieDetails.putExtra(Intent.EXTRA_TEXT, clickedMovie);
         startActivity(intentToStartMovieDetails);
     }
 
     private void loadMovieData() {
         showMoviePosterData();
-        //todo - json ??
+        // todo json??
     }
 
     private void showMoviePosterData() {
@@ -106,19 +106,25 @@ public class MainActivity extends AppCompatActivity
         }
 
         @Override
-        protected String[] doInBackground(String... strings) {
-            if (strings.length == 0) {
+        protected String[] doInBackground(String... params) {
+            if (params.length == 0) {
                 return null;
             }
+            String movie = params[0];
+            URL movieRequestUrl = createUrl(movie);
 
             try {
-                //todo json
+                String jsonMovieResponse = String.valueOf(fetchMovieData(String.valueOf(movieRequestUrl)));
+
+                String[] simpleJsonMovieData = JSONUtils.extractDataFromJson(jsonMovieResponse);
+
+                return simpleJsonMovieData;
             } catch (Exception e) {
                 Log.e(TAG, "doInBackground: is not working right");
                 e.printStackTrace();
                 return null;
             }
-            return null;
+
         }
 
         @Override
@@ -126,8 +132,9 @@ public class MainActivity extends AppCompatActivity
             mProgressBar.setVisibility(INVISIBLE);
             if (moviePosters != null) {
                 showMoviePosterData();
-                Picasso.with(this, .load("http://i.imgur.com/Dvpvk1R.png")
-                        .into(R.id.movie_list_poster);
+                Picasso.with(context).load("http://image.tmdb.org/t/p/w185" + moviePosters[0])
+                   .into(mImageView);
+               MovieAdapter.setMovieData(moviePosters);
             } else {
                 showErrorMessage();
             }
@@ -149,11 +156,12 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.action_popular) {
-            //todo
+            //todo sort by popular movies
+            //JSONUtils.createUrl(sortby ==);
         }
 
         if (id == R.id.action_rating) {
-            //todo
+            //todo sort by rating
         }
 
         return super.onOptionsItemSelected(item);
