@@ -30,7 +30,7 @@ import static com.example.android.popularmovies.Utilities.JSONUtils.createUrl;
 import static com.example.android.popularmovies.Utilities.JSONUtils.fetchMovieData;
 
 public class MainActivity extends AppCompatActivity
-        implements MovieAdapterOnClickHandler {
+        implements MovieAdapter.MovieAdapterOnClickHandler {
 
     Context context;
 
@@ -71,15 +71,6 @@ public class MainActivity extends AppCompatActivity
         loadMovieData();
     }
 
-    @Override
-    public void onClick(String clickedMovie) {
-        Context context = this;
-        Class destinationClass = MovieDetails.class;
-        Intent intentToStartMovieDetails = new Intent(context, destinationClass);
-        intentToStartMovieDetails.putExtra(Intent.EXTRA_TEXT, clickedMovie);
-        startActivity(intentToStartMovieDetails);
-    }
-
     private void loadMovieData() {
         showMoviePosterData();
         // todo json??
@@ -93,6 +84,15 @@ public class MainActivity extends AppCompatActivity
     private void showErrorMessage() {
         mRecyclerView.setVisibility(INVISIBLE);
         mErrorMessageDisplay.setVisibility(VISIBLE);
+    }
+
+    @Override
+    public void onClick(Movie clickedMovie) {
+        Context context = this;
+        Class destinationClass = MovieDetails.class;
+        Intent intentToStartMovieDetails = new Intent(context, destinationClass);
+        intentToStartMovieDetails.putExtra(Intent.EXTRA_TEXT, (Parcelable) clickedMovie);
+        startActivity(intentToStartMovieDetails);
     }
 
     //asyncTask
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity
             try {
                 String jsonMovieResponse = String.valueOf(fetchMovieData(String.valueOf(movieRequestUrl)));
 
-                String[] simpleJsonMovieData = JSONUtils.extractDataFromJson(jsonMovieResponse);
+                String[] simpleJsonMovieData = JSONUtils.extractDataFromJson(getApplicationContext(), jsonMovieResponse);
 
                 return simpleJsonMovieData;
             } catch (Exception e) {

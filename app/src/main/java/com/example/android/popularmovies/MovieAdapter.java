@@ -9,12 +9,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.android.popularmovies.model.Movie;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
     private static final String TAG = MovieAdapter.class.getSimpleName();
+    private final Context mContext;
     private final MovieAdapterOnClickHandler mClickHandler;
     private List<Movie> mMovies;
 
@@ -27,14 +29,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      * create MovieAdapter
      * @param clickHandler is called when the poster is clicked.
      */
-    public MovieAdapter(MovieAdapterOnClickHandler clickHandler) {
+    public MovieAdapter(Context context, MovieAdapterOnClickHandler clickHandler) {
         mClickHandler = clickHandler;
+        mContext = context;
     }
 
+    class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        public static ImageView mImageView;
+        ImageView mImageView;
 
         public MovieAdapterViewHolder(View view) {
             super(view);
@@ -72,9 +74,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MovieAdapterViewHolder movieAdapterViewHolder, int position) {
+    public void onBindViewHolder(@NonNull MovieAdapterViewHolder holder, int position) {
         Movie currentMovie = mMovies.get(position);
-        MovieAdapterViewHolder.mImageView.setImageResource(currentMovie);
+
+        Picasso.with(mContext)
+                .load(currentMovie.getPosterThumbnail())
+                .into(holder.mImageView);
     }
 
     @Override

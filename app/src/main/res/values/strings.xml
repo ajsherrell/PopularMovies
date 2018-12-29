@@ -5,5 +5,5 @@
     <string name="rating">Rating</string>
     <string name="no_internet_connection">No internet connection</string>
     <string name="movie_poster">movie_poster</string>
-    <string name="my_api_key">7019ac9f2a11e2696ae22a35ebf9b776</string>
+    <string name="title_activity_settings">SettingsActivity</string>
 </resources>

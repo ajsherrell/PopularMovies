@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.model.Movie;
 
 import org.json.JSONArray;
@@ -28,11 +27,10 @@ public final class JSONUtils {
     private static final String TAG = JSONUtils.class.getSimpleName();
 
     // my api key
-    private static final int MY_API_KEY = R.string.my_api_key;
+    private static final String MY_API_KEY = "";
     //<<<<<<<<<<<<<<<<<<< get your own api key >>>>>>>>>>>>>>>>
     private static final String API_KEY = "api-key";
 
-    // URL example from Movie database https://api.themoviedb.org/3/movie/550?api_key=7019ac9f2a11e2696ae22a35ebf9b776
     private static final String MOVIE_DATABASE_BASE_URL = "https://api.themoviedb.org/3/discover/movie";
 
     // JSON constants
@@ -57,7 +55,7 @@ public final class JSONUtils {
      * @param requestURL get url
      * @return movies
      */
-    public static String[] fetchMovieData(String requestURL) {
+    public static List<Movie> fetchMovieData(String requestURL) {
         // create URL object
         URL url = createUrl(requestURL);
         Log.i(TAG, "fetchMovieData is working!");
@@ -72,7 +70,7 @@ public final class JSONUtils {
         }
 
         // extract relevant fields from JSON response and create list of objects
-        String[] movies = extractDataFromJson(jsonResponse);
+        List<Movie> movies = extractDataFromJson(jsonResponse);
 
         // return the list of {@link Movie} objects
         return movies;
@@ -168,7 +166,7 @@ public final class JSONUtils {
         return output.toString();
     }
 
-    public static String[] extractDataFromJson(String moviesJSON) {
+    public static List<Movie> extractDataFromJson(String moviesJSON) {
 
         // if the JSON string is empty or null, then return early
         if (TextUtils.isEmpty(moviesJSON)) {
@@ -176,7 +174,7 @@ public final class JSONUtils {
         }
 
         //create an empty ArrayList to add movies to
-        String[] movies = new String[0];
+        List<Movie> movies = new ArrayList<>();
 
         // Try to parse the JSON response string. If there's a problem with the way the JSON
         // is formatted, a JSONException exception object will be thrown.

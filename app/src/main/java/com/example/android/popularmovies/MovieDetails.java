@@ -16,6 +16,8 @@ public class MovieDetails extends AppCompatActivity {
     private TextView userRating;
     private TextView releaseDate;
 
+    private String moviePage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +33,9 @@ public class MovieDetails extends AppCompatActivity {
 
         if (intentThatStartedThisActivity != null) {
             if (intentThatStartedThisActivity.hasExtra(Intent.EXTRA_TEXT)) {
-                //todo display intent
+                moviePage = intentThatStartedThisActivity.getStringExtra(Intent.EXTRA_TEXT);
+                originalTitle.setText(moviePage);
+
             }
         }
 
