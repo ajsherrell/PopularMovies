@@ -3,6 +3,7 @@ package com.example.android.popularmovies;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import com.example.android.popularmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -22,7 +24,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     // interface for on click messages
     public interface MovieAdapterOnClickHandler {
-        void onClick(Movie clickedMovie);
+        void onClick(List<Movie> clickedMovie);
     }
 
     /**
@@ -50,7 +52,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
          */
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
-            Movie clickedMovies = mMovies.get(adapterPosition);
+            List<Movie> clickedMovies = Collections.singletonList(mMovies.get(adapterPosition));
             mClickHandler.onClick(clickedMovies);
         }
     }
@@ -77,9 +79,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     public void onBindViewHolder(@NonNull MovieAdapterViewHolder holder, int position) {
         Movie currentMovie = mMovies.get(position);
 
-        Picasso.with(mContext)
-                .load(currentMovie.getPosterThumbnail())
-                .into(holder.mImageView);
+        if (!TextUtils.isEmpty(currentMovie.getPosterThumbnail())) {
+            Picasso.with(mContext)
+                    .load(currentMovie.getPosterThumbnail())
+                    .placeholder(R.drawable.baseline_camera_alt_black_18dp)
+                    .error(R.drawable.baseline_error_outline_black_18dp)
+                    .into(holder.mImageView);
+        }
     }
 
     @Override
@@ -90,9 +96,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         return mMovies.size();
     }
 
-    public void setMovieData(List<Movie> movies) {
-        mMovies = movies;
-        notifyDataSetChanged();
+    public static void setMovieData(List<Movie> movies) {
+        List<Movie> mMovies = movies;
     }
 
 

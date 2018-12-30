@@ -1,5 +1,6 @@
 package com.example.android.popularmovies.Utilities;
 
+import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,10 +27,12 @@ public final class JSONUtils {
     //log tag
     private static final String TAG = JSONUtils.class.getSimpleName();
 
+    Context context;
+
     // my api key
     private static final String MY_API_KEY = "";
     //<<<<<<<<<<<<<<<<<<< get your own api key >>>>>>>>>>>>>>>>
-    private static final String API_KEY = "api-key";
+    private static final String API_KEY = "my_api_key";
 
     private static final String MOVIE_DATABASE_BASE_URL = "https://api.themoviedb.org/3/discover/movie";
 
@@ -55,7 +58,7 @@ public final class JSONUtils {
      * @param requestURL get url
      * @return movies
      */
-    public static List<Movie> fetchMovieData(String requestURL) {
+    public static List<Movie> fetchMovieData(Context context, String requestURL) {
         // create URL object
         URL url = createUrl(requestURL);
         Log.i(TAG, "fetchMovieData is working!");
@@ -70,7 +73,7 @@ public final class JSONUtils {
         }
 
         // extract relevant fields from JSON response and create list of objects
-        List<Movie> movies = extractDataFromJson(jsonResponse);
+        List<Movie> movies = extractDataFromJson(context, jsonResponse);
 
         // return the list of {@link Movie} objects
         return movies;
@@ -111,7 +114,7 @@ public final class JSONUtils {
      * @return
      * @throws IOException
      */
-    private static String makeHttpRequest(URL url) throws IOException {
+    public static String makeHttpRequest(URL url) throws IOException {
         String jsonResponse = "";
 
         // if the URL is null, then return early
@@ -166,7 +169,7 @@ public final class JSONUtils {
         return output.toString();
     }
 
-    public static List<Movie> extractDataFromJson(String moviesJSON) {
+    public static List<Movie> extractDataFromJson(Context context, String moviesJSON) {
 
         // if the JSON string is empty or null, then return early
         if (TextUtils.isEmpty(moviesJSON)) {
@@ -213,7 +216,7 @@ public final class JSONUtils {
                 String releaseDate = currentMovie.getString("release_date");
 
                 // create a new {@link Movie} object with the JSON response
-                Movie moviesList = new Movie(MovieId, originalTitle, posterThumbnail,
+                Movie moviesList = new Movie(originalTitle, posterThumbnail,
                         plotOverview, userRating, releaseDate);
 
                 // add the new {@link Movie} to the list of movies

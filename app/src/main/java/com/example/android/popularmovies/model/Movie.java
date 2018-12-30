@@ -7,12 +7,12 @@ import android.os.Parcelable;
 public class Movie implements Parcelable {
 
     private String mOriginalTitle;
-    private int mPosterThumbnail;
+    private String mPosterThumbnail;
     private String mPlotOverview;
     private String mUserRating;
     private String mReleaseDate;
 
-    public Movie(String originalTitle, int posterThumbnail, String plotOverview, String userRating, String releaseDate) {
+    public Movie(String originalTitle, String posterThumbnail, String plotOverview, String userRating, String releaseDate) {
         this.mOriginalTitle = originalTitle;
         this.mPosterThumbnail = posterThumbnail;
         this.mPlotOverview = plotOverview;
@@ -22,7 +22,7 @@ public class Movie implements Parcelable {
 
     private Movie(Parcel in) {
         mOriginalTitle = in.readString();
-        mPosterThumbnail = in.readInt();
+        mPosterThumbnail = in.readString();
         mPlotOverview = in.readString();
         mUserRating = in.readString();
         mReleaseDate = in.readString();
@@ -41,7 +41,7 @@ public class Movie implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(mOriginalTitle);
-        parcel.writeInt(mPosterThumbnail);
+        parcel.writeString(mPosterThumbnail);
         parcel.writeString(mPlotOverview);
         parcel.writeString(mUserRating);
         parcel.writeString(mReleaseDate);
@@ -67,11 +67,11 @@ public class Movie implements Parcelable {
         this.mOriginalTitle = OriginalTitle;
     }
 
-    public int getPosterThumbnail() {
+    public String getPosterThumbnail() {
         return mPosterThumbnail;
     }
 
-    public void setPosterThumbnail(int PosterThumbnail) {
+    public void setPosterThumbnail(String PosterThumbnail) {
         this.mPosterThumbnail = PosterThumbnail;
     }
 

@@ -7,8 +7,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.popularmovies.model.Movie;
+import com.squareup.picasso.Picasso;
 
 public class MovieDetails extends AppCompatActivity {
+
+    public static final String DETAILS_INTENT = "com.example.android.popularmovies.details";
 
     private TextView originalTitle;
     private ImageView moviePoster;
@@ -16,12 +19,14 @@ public class MovieDetails extends AppCompatActivity {
     private TextView userRating;
     private TextView releaseDate;
 
-    private String moviePage;
+    private Movie moviePage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
+
+        moviePage = getIntent().getParcelableExtra(DETAILS_INTENT);
 
         originalTitle = (TextView)findViewById(R.id.original_title);
         moviePoster = (ImageView)findViewById(R.id.movie_poster_image_thumbnail);
@@ -29,15 +34,21 @@ public class MovieDetails extends AppCompatActivity {
         userRating = (TextView)findViewById(R.id.user_rating);
         releaseDate = (TextView)findViewById(R.id.release_date);
 
-        Intent intentThatStartedThisActivity = getIntent();
-
-        if (intentThatStartedThisActivity != null) {
-            if (intentThatStartedThisActivity.hasExtra(Intent.EXTRA_TEXT)) {
-                moviePage = intentThatStartedThisActivity.getStringExtra(Intent.EXTRA_TEXT);
-                originalTitle.setText(moviePage);
-
-            }
+        populateUI();
         }
 
+    private void populateUI() {
+        originalTitle.setText(moviePage.getOriginalTitle());
+        plotOverview.setText(moviePage.getPlotOverview());
+        userRating.setText("User Rating " + moviePage.getUserRating());
+        releaseDate.setText(moviePage.getReleaseDate());
+
+        Picasso.with(this)
+                .load(moviePage.getPosterThumbnail())
+                .placeholder(R.drawable.baseline_camera_alt_black_18dp)
+                .error(R.drawable.baseline_error_outline_black_18dp)
+                .into(moviePoster);
     }
+
 }
+

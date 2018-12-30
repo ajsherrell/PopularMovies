@@ -2,7 +2,6 @@ package com.example.android.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +26,9 @@ import java.util.List;
 
 import static android.support.v7.widget.RecyclerView.*;
 import static com.example.android.popularmovies.Utilities.JSONUtils.createUrl;
+import static com.example.android.popularmovies.Utilities.JSONUtils.extractDataFromJson;
 import static com.example.android.popularmovies.Utilities.JSONUtils.fetchMovieData;
+import static java.lang.String.*;
 
 public class MainActivity extends AppCompatActivity
         implements MovieAdapter.MovieAdapterOnClickHandler {
@@ -63,9 +64,14 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView.setHasFixedSize(true);
 
         // adapter links movie data
-        mMovieAdapter = new MovieAdapter(this);
+        mMovieAdapter = new MovieAdapter(this, new MovieAdapter.MovieAdapterOnClickHandler() {
+            @Override
+            public void onClick(List<Movie> clickedMovie) {
+                // todo: what do I do here?
+            }
+        });
 
-        // attach adapter to recyclerview
+        // attach adapter to recyclerView
         mRecyclerView.setAdapter(mMovieAdapter);
 
         loadMovieData();
@@ -87,36 +93,28 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onClick(Movie clickedMovie) {
-        Context context = this;
-        Class destinationClass = MovieDetails.class;
-        Intent intentToStartMovieDetails = new Intent(context, destinationClass);
-        intentToStartMovieDetails.putExtra(Intent.EXTRA_TEXT, (Parcelable) clickedMovie);
-        startActivity(intentToStartMovieDetails);
+    public void onClick(List<Movie> clickedMovie) {
+        Intent intent = new Intent(MainActivity.this, MovieDetails.class);
+        intent.putExtra(MovieDetails.DETAILS_INTENT, (Parcelable) clickedMovie);
+        startActivity(intent);
     }
 
     //asyncTask
-    public class FetchMovieTask extends AsyncTask<String, Void, String[]> {
+    public class FetchMovieTask extends AsyncTask<String, Void, List<Movie>> {
 
 
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mProgressBar.setVisibility(VISIBLE);
-        }
-
-        @Override
-        protected String[] doInBackground(String... params) {
-            if (params.length == 0) {
+        protected List<Movie> doInBackground(String... strings) {
+            if (strings.length == 0) {
                 return null;
             }
-            String movie = params[0];
-            URL movieRequestUrl = createUrl(movie);
+            String movie = strings[0];
+            URL movieRequestUrl = createUrl(valueOf(movie));
 
             try {
-                String jsonMovieResponse = String.valueOf(fetchMovieData(String.valueOf(movieRequestUrl)));
+                String jsonMovieResponse = JSONUtils.makeHttpRequest(movieRequestUrl);
 
-                String[] simpleJsonMovieData = JSONUtils.extractDataFromJson(getApplicationContext(), jsonMovieResponse);
+                List<Movie> simpleJsonMovieData = JSONUtils.extractDataFromJson(MainActivity.this, jsonMovieResponse);
 
                 return simpleJsonMovieData;
             } catch (Exception e) {
@@ -124,15 +122,21 @@ public class MainActivity extends AppCompatActivity
                 e.printStackTrace();
                 return null;
             }
-
         }
 
         @Override
-        protected void onPostExecute(String[] moviePosters) {
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressBar.setVisibility(VISIBLE);
+        }
+
+
+        @Override
+        protected void onPostExecute(List<Movie> moviePosters) {
             mProgressBar.setVisibility(INVISIBLE);
             if (moviePosters != null) {
                 showMoviePosterData();
-                Picasso.with(context).load("http://image.tmdb.org/t/p/w185" + moviePosters[0])
+                Picasso.with(context).load("http://image.tmdb.org/t/p/w185" + moviePosters)
                    .into(mImageView);
                MovieAdapter.setMovieData(moviePosters);
             } else {
