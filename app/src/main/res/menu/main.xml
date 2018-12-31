@@ -5,9 +5,13 @@
         android:id="@+id/action_popular"
         android:orderInCategory="1"
         android:title="@string/popular"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="never"/>
     <item android:id="@+id/action_rating"
         android:orderInCategory="2"
         android:title="@string/rating"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="never"/>
+    <item android:id="@+id/action_refresh"
+        android:orderInCategory="3"
+        android:title="@string/refresh"
+        app:showAsAction="never"/>
 </menu>

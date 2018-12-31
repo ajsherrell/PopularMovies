@@ -14,8 +14,6 @@ public class MovieDetails extends AppCompatActivity {
 
     private static final String TAG = MovieDetails.class.getSimpleName();
 
-    public static final String DETAILS_INTENT = "com.example.android.popularmovies.details";
-
     private TextView originalTitle;
     private ImageView moviePoster;
     private TextView plotOverview;
@@ -32,8 +30,6 @@ public class MovieDetails extends AppCompatActivity {
         Intent intent = getIntent();
         moviePage = intent.getParcelableExtra("Movie");
 
-       // moviePage = getIntent().getParcelableExtra(DETAILS_INTENT);
-
         originalTitle = (TextView)findViewById(R.id.original_title);
         moviePoster = (ImageView)findViewById(R.id.movie_poster_image_thumbnail);
         plotOverview = (TextView)findViewById(R.id.plot_synopsis);
@@ -48,7 +44,7 @@ public class MovieDetails extends AppCompatActivity {
     private void populateUI() {
         originalTitle.setText(moviePage.getOriginalTitle());
         plotOverview.setText(moviePage.getPlotOverview());
-        userRating.setText("User Rating " + moviePage.getUserRating());
+        userRating.setText(R.string.user_rating + moviePage.getUserRating());
         releaseDate.setText(moviePage.getReleaseDate());
 
         Picasso.with(this)

@@ -6,4 +6,6 @@
     <string name="no_internet_connection">No internet connection</string>
     <string name="movie_poster">movie_poster</string>
     <string name="title_activity_settings">SettingsActivity</string>
+    <string name="refresh">Refresh</string>
+    <string name="user_rating">User Rating </string>
 </resources>

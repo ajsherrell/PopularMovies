@@ -47,6 +47,7 @@ public final class JSONUtils {
     private static final String SORT_BY = "sort_by";
     public static final String SORT_BY_POPULAR = "popularity.desc";
     public static final String SORT_BY_RATING = "vote_count.desc";
+    public static final String SORT_BY_AVERAGE = "vote_average.desc";
     private static final String INCLUDE_ADULT = "include_adult";
     private static final String INCLUDE_VIDEO = "include_video";
     private static final String PAGE = "page";
@@ -84,9 +85,11 @@ public final class JSONUtils {
     public static URL createUrl(String sortBy) {
         // figure out which way to sort
         if (sortBy == SORT_BY_POPULAR) {
-            //todo make menu item
+            sortBy = SORT_BY_POPULAR;
         } else if (sortBy == SORT_BY_RATING) {
-            //todo make menu item
+            sortBy = SORT_BY_RATING;
+        } else {
+            sortBy = SORT_BY_AVERAGE;
         }
 
         //build the URI

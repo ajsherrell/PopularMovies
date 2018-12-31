@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import com.example.android.popularmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     private static final String TAG = MovieAdapter.class.getSimpleName();
     private final Context mContext;
     private final MovieAdapterOnClickHandler mClickHandler;
-    private List<Movie> mMovies;
+    private static List<Movie> mMovies = new ArrayList<>();
 
     // interface for on click messages
     public interface MovieAdapterOnClickHandler {
@@ -99,8 +100,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         return mMovies.size();
     }
 
-    public static void setMovieData(List<Movie> movies) {
-        List<Movie> mMovies = movies;
+    public static void add(Movie movies) {
+        mMovies.add(movies);
+    }
+
+    public void clear() {
+        mMovies.clear();
     }
 
 }

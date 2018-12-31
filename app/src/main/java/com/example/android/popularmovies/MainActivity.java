@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.android.popularmovies.Utilities.JSONUtils;
@@ -24,6 +25,7 @@ import java.net.URL;
 import java.util.List;
 
 import static android.support.v7.widget.RecyclerView.*;
+import static com.example.android.popularmovies.Utilities.JSONUtils.SORT_BY_AVERAGE;
 import static com.example.android.popularmovies.Utilities.JSONUtils.SORT_BY_POPULAR;
 import static com.example.android.popularmovies.Utilities.JSONUtils.SORT_BY_RATING;
 import static com.example.android.popularmovies.Utilities.JSONUtils.createUrl;
@@ -32,8 +34,6 @@ import static java.lang.String.*;
 public class MainActivity extends AppCompatActivity
         implements MovieAdapter.MovieAdapterOnClickHandler {
 
-    Context context;
-
     private static final String TAG = MainActivity.class.getSimpleName();
 
 
@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity
     private MovieAdapter mMovieAdapter;
     private TextView mErrorMessageDisplay;
     private ProgressBar mProgressBar;
-    private ImageView mImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +51,7 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView = (RecyclerView)findViewById(R.id.recyclerview_movies);
         mErrorMessageDisplay = (TextView)findViewById(R.id.tv_error_message_display);
         mProgressBar = (ProgressBar)findViewById(R.id.pb_loading_indicator);
-        mImageView = (ImageView)findViewById(R.id.movie_list_poster);
+      //  mImageView = (ImageView)findViewById(R.id.movie_list_poster);
 
 
         LayoutManager layoutManager = new GridLayoutManager(this, 2);
@@ -73,12 +72,12 @@ public class MainActivity extends AppCompatActivity
         // attach adapter to recyclerView
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        loadMovieData();
+        loadMovieData(SORT_BY_AVERAGE);
     }
 
-    private void loadMovieData() {
+    private void loadMovieData(String sortOrder) {
         showMoviePosterData();
-        new FetchMovieTask().execute();
+        new FetchMovieTask().execute(sortOrder);
     }
 
     private void showMoviePosterData() {
@@ -95,7 +94,6 @@ public class MainActivity extends AppCompatActivity
     public void onClick(List<Movie> clickedMovie) {
         Intent intent = new Intent(MainActivity.this, MovieDetails.class);
         intent.putExtra("Movie", (Parcelable) clickedMovie);
-        //intent.putExtra(MovieDetails.DETAILS_INTENT, (Parcelable) clickedMovie);
         startActivity(intent);
     }
 
@@ -135,15 +133,26 @@ public class MainActivity extends AppCompatActivity
         protected void onPostExecute(List<Movie> moviePosters) {
             mProgressBar.setVisibility(INVISIBLE);
             if (moviePosters != null) {
+                moviePosters.clear();
                 showMoviePosterData();
-                MovieAdapter.setMovieData(moviePosters);
+;                for (Movie movies : moviePosters) {
+                    MovieAdapter.add(movies);
+                }
             } else {
                 showErrorMessage();
                 Log.e(TAG, "onPostExecute: is not working!!!!!!");
             }
+            mMovieAdapter.notifyDataSetChanged();
+            super.onPostExecute(moviePosters);
+            Log.e(TAG, "onPostExecute: something is wrong!!!!!");
         }
     }
 
+    @Override
+    protected void onStart() {
+        loadMovieData(SORT_BY_AVERAGE);
+        super.onStart();
+    }
 
     //menu
     @Override
@@ -158,14 +167,19 @@ public class MainActivity extends AppCompatActivity
 
         int id = item.getItemId();
 
-        if (id == R.id.action_popular) {
-            JSONUtils.createUrl(SORT_BY_POPULAR);
+        switch (id) {
+            case R.id.action_refresh:
+                loadMovieData(SORT_BY_AVERAGE);
+                break;
+            case R.id.action_popular:
+                loadMovieData(SORT_BY_POPULAR);
+                break;
+            case R.id.action_rating:
+                loadMovieData(SORT_BY_RATING);
+                break;
+            default:
+                return true;
         }
-
-        if (id == R.id.action_rating) {
-            JSONUtils.createUrl(SORT_BY_RATING);
-        }
-
         return super.onOptionsItemSelected(item);
     }
 }
