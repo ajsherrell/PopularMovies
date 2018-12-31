@@ -20,7 +20,7 @@ public class Movie implements Parcelable {
         this.mReleaseDate = releaseDate;
     }
 
-    private Movie(Parcel in) {
+    public Movie(Parcel in) {
         mOriginalTitle = in.readString();
         mPosterThumbnail = in.readString();
         mPlotOverview = in.readString();
@@ -30,7 +30,7 @@ public class Movie implements Parcelable {
 
     @Override
     public int describeContents() {
-        return 0;
+        return hashCode();
     }
 
     public String toString() {
@@ -47,7 +47,7 @@ public class Movie implements Parcelable {
         parcel.writeString(mReleaseDate);
     }
 
-    public final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
         @Override
         public Movie createFromParcel(Parcel parcel) {
             return new Movie(parcel);

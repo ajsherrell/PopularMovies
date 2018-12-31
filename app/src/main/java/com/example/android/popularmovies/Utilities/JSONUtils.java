@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.example.android.popularmovies.BuildConfig;
 import com.example.android.popularmovies.model.Movie;
 
 import org.json.JSONArray;
@@ -30,7 +31,7 @@ public final class JSONUtils {
     Context context;
 
     // my api key
-    private static final String MY_API_KEY = "";
+    private static final String MY_API_KEY = BuildConfig.API_KEY;
     //<<<<<<<<<<<<<<<<<<< get your own api key >>>>>>>>>>>>>>>>
     private static final String API_KEY = "my_api_key";
 
@@ -44,8 +45,8 @@ public final class JSONUtils {
     private static final String MY_LANGUAGE = "en-US";
 
     private static final String SORT_BY = "sort_by";
-    private static final String SORT_BY_POPULAR = "popularity.desc";
-    private static final String SORT_BY_RATING = "vote_count.desc";
+    public static final String SORT_BY_POPULAR = "popularity.desc";
+    public static final String SORT_BY_RATING = "vote_count.desc";
     private static final String INCLUDE_ADULT = "include_adult";
     private static final String INCLUDE_VIDEO = "include_video";
     private static final String PAGE = "page";
@@ -83,7 +84,9 @@ public final class JSONUtils {
     public static URL createUrl(String sortBy) {
         // figure out which way to sort
         if (sortBy == SORT_BY_POPULAR) {
-
+            //todo make menu item
+        } else if (sortBy == SORT_BY_RATING) {
+            //todo make menu item
         }
 
         //build the URI
@@ -165,6 +168,7 @@ public final class JSONUtils {
                 output.append(line);
                 line = reader.readLine();
             }
+            Log.e(TAG, "readFromStream: problem with inputStream!!!!!!");
         }
         return output.toString();
     }

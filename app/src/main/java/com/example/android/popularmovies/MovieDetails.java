@@ -3,6 +3,7 @@ package com.example.android.popularmovies;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -10,6 +11,8 @@ import com.example.android.popularmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 
 public class MovieDetails extends AppCompatActivity {
+
+    private static final String TAG = MovieDetails.class.getSimpleName();
 
     public static final String DETAILS_INTENT = "com.example.android.popularmovies.details";
 
@@ -26,7 +29,10 @@ public class MovieDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
-        moviePage = getIntent().getParcelableExtra(DETAILS_INTENT);
+        Intent intent = getIntent();
+        moviePage = intent.getParcelableExtra("Movie");
+
+       // moviePage = getIntent().getParcelableExtra(DETAILS_INTENT);
 
         originalTitle = (TextView)findViewById(R.id.original_title);
         moviePoster = (ImageView)findViewById(R.id.movie_poster_image_thumbnail);
@@ -35,6 +41,8 @@ public class MovieDetails extends AppCompatActivity {
         releaseDate = (TextView)findViewById(R.id.release_date);
 
         populateUI();
+
+        Log.e(TAG, "onCreate: is not working!!!!");
         }
 
     private void populateUI() {
@@ -48,6 +56,8 @@ public class MovieDetails extends AppCompatActivity {
                 .placeholder(R.drawable.baseline_camera_alt_black_18dp)
                 .error(R.drawable.baseline_error_outline_black_18dp)
                 .into(moviePoster);
+
+        Log.e(TAG, "populateUI: is not working!!!!");
     }
 
 }

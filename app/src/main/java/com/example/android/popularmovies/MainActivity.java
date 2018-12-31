@@ -19,15 +19,14 @@ import android.widget.TextView;
 
 import com.example.android.popularmovies.Utilities.JSONUtils;
 import com.example.android.popularmovies.model.Movie;
-import com.squareup.picasso.Picasso;
 
 import java.net.URL;
 import java.util.List;
 
 import static android.support.v7.widget.RecyclerView.*;
+import static com.example.android.popularmovies.Utilities.JSONUtils.SORT_BY_POPULAR;
+import static com.example.android.popularmovies.Utilities.JSONUtils.SORT_BY_RATING;
 import static com.example.android.popularmovies.Utilities.JSONUtils.createUrl;
-import static com.example.android.popularmovies.Utilities.JSONUtils.extractDataFromJson;
-import static com.example.android.popularmovies.Utilities.JSONUtils.fetchMovieData;
 import static java.lang.String.*;
 
 public class MainActivity extends AppCompatActivity
@@ -67,7 +66,7 @@ public class MainActivity extends AppCompatActivity
         mMovieAdapter = new MovieAdapter(this, new MovieAdapter.MovieAdapterOnClickHandler() {
             @Override
             public void onClick(List<Movie> clickedMovie) {
-                // todo: what do I do here?
+                onClick(clickedMovie);
             }
         });
 
@@ -79,7 +78,7 @@ public class MainActivity extends AppCompatActivity
 
     private void loadMovieData() {
         showMoviePosterData();
-        // todo json??
+        new FetchMovieTask().execute();
     }
 
     private void showMoviePosterData() {
@@ -95,7 +94,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onClick(List<Movie> clickedMovie) {
         Intent intent = new Intent(MainActivity.this, MovieDetails.class);
-        intent.putExtra(MovieDetails.DETAILS_INTENT, (Parcelable) clickedMovie);
+        intent.putExtra("Movie", (Parcelable) clickedMovie);
+        //intent.putExtra(MovieDetails.DETAILS_INTENT, (Parcelable) clickedMovie);
         startActivity(intent);
     }
 
@@ -136,11 +136,10 @@ public class MainActivity extends AppCompatActivity
             mProgressBar.setVisibility(INVISIBLE);
             if (moviePosters != null) {
                 showMoviePosterData();
-                Picasso.with(context).load("http://image.tmdb.org/t/p/w185" + moviePosters)
-                   .into(mImageView);
-               MovieAdapter.setMovieData(moviePosters);
+                MovieAdapter.setMovieData(moviePosters);
             } else {
                 showErrorMessage();
+                Log.e(TAG, "onPostExecute: is not working!!!!!!");
             }
         }
     }
@@ -160,12 +159,11 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.action_popular) {
-            //todo sort by popular movies
-            //JSONUtils.createUrl(sortby ==);
+            JSONUtils.createUrl(SORT_BY_POPULAR);
         }
 
         if (id == R.id.action_rating) {
-            //todo sort by rating
+            JSONUtils.createUrl(SORT_BY_RATING);
         }
 
         return super.onOptionsItemSelected(item);

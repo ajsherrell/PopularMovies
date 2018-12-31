@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             int adapterPosition = getAdapterPosition();
             List<Movie> clickedMovies = Collections.singletonList(mMovies.get(adapterPosition));
             mClickHandler.onClick(clickedMovies);
+            Log.e(TAG, "onClick: is not working!!!!");
         }
     }
 
@@ -86,6 +88,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
                     .error(R.drawable.baseline_error_outline_black_18dp)
                     .into(holder.mImageView);
         }
+        Log.e(TAG, "onBindViewHolder: is not working!!!!");
     }
 
     @Override
@@ -99,6 +102,5 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     public static void setMovieData(List<Movie> movies) {
         List<Movie> mMovies = movies;
     }
-
 
 }
