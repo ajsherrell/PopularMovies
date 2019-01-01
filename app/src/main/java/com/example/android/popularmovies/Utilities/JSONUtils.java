@@ -48,7 +48,7 @@ public final class JSONUtils {
 
     public static final String SORT_BY_POPULAR = "popular";
     public static final String SORT_BY_RATING = "top_rated";
-    public static final String SORT_BY_ID = movieId;
+    public static String SORT_BY_ID;
 
     //private constructor
     private JSONUtils() {}
@@ -190,7 +190,7 @@ public final class JSONUtils {
                 JSONObject currentMovie = jsonResultsArray.getJSONObject(i);
 
                 // extract the value for the key called "id"
-                String movieId = currentMovie.getString("id");
+                SORT_BY_ID = currentMovie.getString("id");
 
                 // extract the value for the key called "original_title"
                 String originalTitle = currentMovie.getString("original_title");
@@ -208,7 +208,7 @@ public final class JSONUtils {
                 String releaseDate = currentMovie.getString("release_date");
 
                 // create a new {@link Movie} object with the JSON response
-                Movie moviesList = new Movie(movieId, originalTitle, posterThumbnail,
+                Movie moviesList = new Movie(SORT_BY_ID, originalTitle, posterThumbnail,
                         plotOverview, userRating, releaseDate);
 
                 // add the new {@link Movie} to the list of movies

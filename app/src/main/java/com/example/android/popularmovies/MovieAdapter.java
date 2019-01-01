@@ -89,7 +89,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
                     .error(R.drawable.baseline_error_outline_black_18dp)
                     .into(holder.mImageView);
         }
-        Log.e(TAG, "onBindViewHolder: is not working!!!!");
+        Log.d(TAG, "onBindViewHolder: is not working!!!!" + currentMovie.getPosterThumbnail());
     }
 
     @Override

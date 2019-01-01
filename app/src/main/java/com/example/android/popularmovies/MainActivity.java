@@ -2,12 +2,15 @@ package com.example.android.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -53,7 +56,7 @@ public class MainActivity extends AppCompatActivity
         mProgressBar = (ProgressBar)findViewById(R.id.pb_loading_indicator);
 
 
-        LayoutManager layoutManager = new GridLayoutManager(this, 2);
+        GridLayoutManager layoutManager = new GridLayoutManager(context, numColumns());
 
         mRecyclerView.setLayoutManager(layoutManager);
 
@@ -61,12 +64,7 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView.setHasFixedSize(true);
 
         // adapter links movie data
-        mMovieAdapter = new MovieAdapter(this, new MovieAdapter.MovieAdapterOnClickHandler() {
-            @Override
-            public void onClick(List<Movie> clickedMovie) {
-                onClick(clickedMovie);
-            }
-        });
+        mMovieAdapter = new MovieAdapter(context, this);
 
         // attach adapter to recyclerView
         mRecyclerView.setAdapter(mMovieAdapter);
@@ -74,9 +72,13 @@ public class MainActivity extends AppCompatActivity
         onStart();
     }
 
-    private static void loadMovieData() {
+    private void loadMovieData() {
+        if (!isOnline()) {
+
+        }
         showMoviePosterData();
-        new FetchMovieTask().execute();
+        FetchMovieTask task = (FetchMovieTask) new FetchMovieTask();
+        task.execute();
     }
 
     private static void showMoviePosterData() {
@@ -182,4 +184,27 @@ public class MainActivity extends AppCompatActivity
         }
         return super.onOptionsItemSelected(item);
     }
+
+    // referenced https://developer.android.com/reference/android/util/DisplayMetrics
+    private int numColumns() {
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        // change this divider to adjust the size of poster
+        int divider = 500;
+        int width = metrics.widthPixels;
+        int columns = width / divider;
+        if (columns < 2) return 2;
+        return columns;
+    }
+
+    // referenced https://stackoverflow.com/questions/1560788/how-to-check-internet-access-on-android-inetaddress-never-times-out
+    private boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm != null) {
+            NetworkInfo netInfo = cm.getActiveNetworkInfo();
+            return netInfo != null && netInfo.isConnectedOrConnecting();
+        }
+        return false;
+    }
+
 }
