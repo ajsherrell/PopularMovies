@@ -9,7 +9,7 @@
 /build
 /captures
 .externalNativeBuild
-gradle.properties
+.gradle.properties
 
 # Built application files
 *.apk
