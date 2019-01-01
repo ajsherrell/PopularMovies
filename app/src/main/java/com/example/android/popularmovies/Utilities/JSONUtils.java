@@ -2,10 +2,12 @@ package com.example.android.popularmovies.Utilities;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.android.popularmovies.BuildConfig;
+import com.example.android.popularmovies.MainActivity;
 import com.example.android.popularmovies.model.Movie;
 
 import org.json.JSONArray;
@@ -33,9 +35,9 @@ public final class JSONUtils {
     // my api key
     private static final String MY_API_KEY = BuildConfig.API_KEY;
     //<<<<<<<<<<<<<<<<<<< get your own api key >>>>>>>>>>>>>>>>
-    private static final String API_KEY = "my_api_key";
+    private static final String API_KEY = "api_key";
 
-    private static final String MOVIE_DATABASE_BASE_URL = "https://api.themoviedb.org/3/discover/movie";
+    private static final String MOVIE_DATABASE_BASE_URL = "https://api.themoviedb.org/3/movie/";
 
     // JSON constants
     private static final String RESULTS = "results";
@@ -44,13 +46,9 @@ public final class JSONUtils {
     private static final String LANGUAGE = "language";
     private static final String MY_LANGUAGE = "en-US";
 
-    private static final String SORT_BY = "sort_by";
-    public static final String SORT_BY_POPULAR = "popularity.desc";
-    public static final String SORT_BY_RATING = "vote_count.desc";
-    public static final String SORT_BY_AVERAGE = "vote_average.desc";
-    private static final String INCLUDE_ADULT = "include_adult";
-    private static final String INCLUDE_VIDEO = "include_video";
-    private static final String PAGE = "page";
+    public static final String SORT_BY_POPULAR = "popular";
+    public static final String SORT_BY_RATING = "top_rated";
+    public static final String SORT_BY_ID = Movie.getMovieId();
 
     //private constructor
     private JSONUtils() {}
@@ -63,7 +61,7 @@ public final class JSONUtils {
     public static List<Movie> fetchMovieData(Context context, String requestURL) {
         // create URL object
         URL url = createUrl(requestURL);
-        Log.i(TAG, "fetchMovieData is working!");
+        Log.d(TAG, "fetchMovieData is working!");
 
         // perform HTTP request to the URL and receive a JSON response back.
         String jsonResponse = null;
@@ -71,7 +69,7 @@ public final class JSONUtils {
             jsonResponse = makeHttpRequest(url);
         } catch (IOException e) {
             e.printStackTrace();
-            Log.i(TAG, "fetchMovieData: something is wrong here!!!!!!");
+            Log.d(TAG, "fetchMovieData: something is wrong here!!!!!!");
         }
 
         // extract relevant fields from JSON response and create list of objects
@@ -81,35 +79,24 @@ public final class JSONUtils {
         return movies;
     }
 
-
     public static URL createUrl(String sortBy) {
         // figure out which way to sort
-        if (sortBy == SORT_BY_POPULAR) {
-            sortBy = SORT_BY_POPULAR;
-        } else if (sortBy == SORT_BY_RATING) {
-            sortBy = SORT_BY_RATING;
-        } else {
-            sortBy = SORT_BY_AVERAGE;
-        }
-
+        //sortBy = sortedMovie();
         //build the URI
-        Uri builtUri = Uri.parse(MOVIE_DATABASE_BASE_URL).buildUpon()
+        Uri builtUri = Uri.parse(MOVIE_DATABASE_BASE_URL + sortBy).buildUpon()
                 .appendQueryParameter(API_KEY, MY_API_KEY)
                 .appendQueryParameter(LANGUAGE, MY_LANGUAGE)
-                .appendQueryParameter(SORT_BY, sortBy)
-                .appendQueryParameter(INCLUDE_ADULT, String.valueOf(false))
-                .appendQueryParameter(INCLUDE_VIDEO, String.valueOf(false))
-                .appendQueryParameter(PAGE, String.valueOf(1))
                 .build();
 
         URL url = null;
         try {
             url = new URL(builtUri.toString());
         } catch (MalformedURLException e) {
-            Log.e(TAG, "createUrl: Problem building the URL", e);
+            Log.d(TAG, "createUrl: Problem building the URL", e);
         }
 
-        Log.i(TAG, "createUrl: is this right??" + builtUri);
+        Log.d(TAG, "createUrl: is this right??" + builtUri);
+        Log.d(TAG, "createUrl: what is sortBy??" + sortBy);
         return url;
     }
 
@@ -117,7 +104,7 @@ public final class JSONUtils {
      * Make an HTTP request to the given URL and return a String as the response.
      * -- used from my Udacity project: NewsApp
      * @param url
-     * @return
+     *
      * @throws IOException
      */
     public static String makeHttpRequest(URL url) throws IOException {
@@ -143,10 +130,10 @@ public final class JSONUtils {
                 inputStream = urlConnection.getInputStream();
                 jsonResponse = readFromStream(inputStream);
             } else {
-                Log.e(TAG, "Error response code: " + urlConnection.getResponseCode());
+                Log.d(TAG, "Error response code: " + urlConnection.getResponseCode());
             }
         } catch (IOException e) {
-            Log.e(TAG, "Problem retrieving the earthquake JSON results.", e);
+            Log.d(TAG, "Problem retrieving the earthquake JSON results.", e);
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -171,7 +158,7 @@ public final class JSONUtils {
                 output.append(line);
                 line = reader.readLine();
             }
-            Log.e(TAG, "readFromStream: problem with inputStream!!!!!!");
+            Log.d(TAG, "readFromStream: problem with inputStream!!!!!!");
         }
         return output.toString();
     }
@@ -205,7 +192,7 @@ public final class JSONUtils {
                 JSONObject currentMovie = jsonResultsArray.getJSONObject(i);
 
                 // extract the value for the key called "id"
-                int MovieId = Integer.parseInt(currentMovie.getString("id"));
+                String movieId = currentMovie.getString("id");
 
                 // extract the value for the key called "original_title"
                 String originalTitle = currentMovie.getString("original_title");
@@ -223,17 +210,17 @@ public final class JSONUtils {
                 String releaseDate = currentMovie.getString("release_date");
 
                 // create a new {@link Movie} object with the JSON response
-                Movie moviesList = new Movie(originalTitle, posterThumbnail,
+                Movie moviesList = new Movie(movieId, originalTitle, posterThumbnail,
                         plotOverview, userRating, releaseDate);
 
                 // add the new {@link Movie} to the list of movies
                 movies.add(moviesList);
-
+                Log.d(TAG, "extractDataFromJson: movies:" + moviesList);
             }
 
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.e(TAG, "extractDataFromJson: problem with parsing the JSON", e);
+            Log.d(TAG, "extractDataFromJson: problem with parsing the JSON", e);
         }
         // return list of movie data
         return movies;

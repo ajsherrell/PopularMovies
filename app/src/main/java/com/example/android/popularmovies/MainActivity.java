@@ -13,9 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.android.popularmovies.Utilities.JSONUtils;
@@ -25,7 +23,7 @@ import java.net.URL;
 import java.util.List;
 
 import static android.support.v7.widget.RecyclerView.*;
-import static com.example.android.popularmovies.Utilities.JSONUtils.SORT_BY_AVERAGE;
+import static com.example.android.popularmovies.Utilities.JSONUtils.SORT_BY_ID;
 import static com.example.android.popularmovies.Utilities.JSONUtils.SORT_BY_POPULAR;
 import static com.example.android.popularmovies.Utilities.JSONUtils.SORT_BY_RATING;
 import static com.example.android.popularmovies.Utilities.JSONUtils.createUrl;
@@ -36,11 +34,13 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    private static Context context;
 
-    private RecyclerView mRecyclerView;
-    private MovieAdapter mMovieAdapter;
-    private TextView mErrorMessageDisplay;
-    private ProgressBar mProgressBar;
+
+    private static RecyclerView mRecyclerView;
+    private static MovieAdapter mMovieAdapter;
+    private static TextView mErrorMessageDisplay;
+    private static ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView = (RecyclerView)findViewById(R.id.recyclerview_movies);
         mErrorMessageDisplay = (TextView)findViewById(R.id.tv_error_message_display);
         mProgressBar = (ProgressBar)findViewById(R.id.pb_loading_indicator);
-      //  mImageView = (ImageView)findViewById(R.id.movie_list_poster);
 
 
         LayoutManager layoutManager = new GridLayoutManager(this, 2);
@@ -72,33 +71,33 @@ public class MainActivity extends AppCompatActivity
         // attach adapter to recyclerView
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        loadMovieData(SORT_BY_AVERAGE);
+        loadMovieData(SORT_BY_ID);
     }
 
-    private void loadMovieData(String sortOrder) {
+    private static void loadMovieData(String sortOrder) {
         showMoviePosterData();
         new FetchMovieTask().execute(sortOrder);
     }
 
-    private void showMoviePosterData() {
+    private static void showMoviePosterData() {
         mErrorMessageDisplay.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.VISIBLE);
     }
 
-    private void showErrorMessage() {
+    private static void showErrorMessage() {
         mRecyclerView.setVisibility(INVISIBLE);
         mErrorMessageDisplay.setVisibility(VISIBLE);
     }
 
     @Override
     public void onClick(List<Movie> clickedMovie) {
-        Intent intent = new Intent(MainActivity.this, MovieDetails.class);
+        Intent intent = new Intent(context, MovieDetails.class);
         intent.putExtra("Movie", (Parcelable) clickedMovie);
         startActivity(intent);
     }
 
     //asyncTask
-    public class FetchMovieTask extends AsyncTask<String, Void, List<Movie>> {
+    private static class FetchMovieTask extends AsyncTask<String, Void, List<Movie>> {
 
 
         @Override
@@ -112,11 +111,11 @@ public class MainActivity extends AppCompatActivity
             try {
                 String jsonMovieResponse = JSONUtils.makeHttpRequest(movieRequestUrl);
 
-                List<Movie> simpleJsonMovieData = JSONUtils.extractDataFromJson(MainActivity.this, jsonMovieResponse);
+                List<Movie> simpleJsonMovieData = JSONUtils.extractDataFromJson(context, jsonMovieResponse);
 
                 return simpleJsonMovieData;
             } catch (Exception e) {
-                Log.e(TAG, "doInBackground: is not working right");
+                Log.d(TAG, "doInBackground: is not working right");
                 e.printStackTrace();
                 return null;
             }
@@ -133,24 +132,23 @@ public class MainActivity extends AppCompatActivity
         protected void onPostExecute(List<Movie> moviePosters) {
             mProgressBar.setVisibility(INVISIBLE);
             if (moviePosters != null) {
-                moviePosters.clear();
                 showMoviePosterData();
 ;                for (Movie movies : moviePosters) {
                     MovieAdapter.add(movies);
                 }
             } else {
                 showErrorMessage();
-                Log.e(TAG, "onPostExecute: is not working!!!!!!");
+                Log.d(TAG, "onPostExecute: is not working!!!!!!");
             }
             mMovieAdapter.notifyDataSetChanged();
             super.onPostExecute(moviePosters);
-            Log.e(TAG, "onPostExecute: something is wrong!!!!!");
+            Log.d(TAG, "onPostExecute: something is wrong!!!!!");
         }
     }
 
     @Override
     protected void onStart() {
-        loadMovieData(SORT_BY_AVERAGE);
+        loadMovieData(SORT_BY_ID);
         super.onStart();
     }
 
@@ -164,18 +162,17 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        Log.d(TAG, "onOptionsItemSelected: something is wrong!!!");
         int id = item.getItemId();
-
         switch (id) {
             case R.id.action_refresh:
-                loadMovieData(SORT_BY_AVERAGE);
+                createUrl(SORT_BY_ID);
                 break;
             case R.id.action_popular:
-                loadMovieData(SORT_BY_POPULAR);
+                createUrl(SORT_BY_POPULAR);
                 break;
             case R.id.action_rating:
-                loadMovieData(SORT_BY_RATING);
+                createUrl(SORT_BY_RATING);
                 break;
             default:
                 return true;

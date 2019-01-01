@@ -1,6 +1,7 @@
 package com.example.android.popularmovies;
 
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,10 +39,11 @@ public class MovieDetails extends AppCompatActivity {
 
         populateUI();
 
-        Log.e(TAG, "onCreate: is not working!!!!");
+        Log.d(TAG, "onCreate: is not working!!!!");
         }
 
-    private void populateUI() {
+    @Nullable
+    public void populateUI() {
         originalTitle.setText(moviePage.getOriginalTitle());
         plotOverview.setText(moviePage.getPlotOverview());
         userRating.setText(R.string.user_rating + moviePage.getUserRating());
@@ -53,7 +55,7 @@ public class MovieDetails extends AppCompatActivity {
                 .error(R.drawable.baseline_error_outline_black_18dp)
                 .into(moviePoster);
 
-        Log.e(TAG, "populateUI: is not working!!!!");
+        Log.d(TAG, "populateUI: is not working!!!!");
     }
 
 }
