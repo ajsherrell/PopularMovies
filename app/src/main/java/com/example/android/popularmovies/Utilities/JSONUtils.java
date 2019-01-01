@@ -48,7 +48,7 @@ public final class JSONUtils {
 
     public static final String SORT_BY_POPULAR = "popular";
     public static final String SORT_BY_RATING = "top_rated";
-    public static final String SORT_BY_ID = Movie.getMovieId();
+    public static final String SORT_BY_ID = movieId;
 
     //private constructor
     private JSONUtils() {}
@@ -80,8 +80,6 @@ public final class JSONUtils {
     }
 
     public static URL createUrl(String sortBy) {
-        // figure out which way to sort
-        //sortBy = sortedMovie();
         //build the URI
         Uri builtUri = Uri.parse(MOVIE_DATABASE_BASE_URL + sortBy).buildUpon()
                 .appendQueryParameter(API_KEY, MY_API_KEY)
@@ -96,7 +94,7 @@ public final class JSONUtils {
         }
 
         Log.d(TAG, "createUrl: is this right??" + builtUri);
-        Log.d(TAG, "createUrl: what is sortBy??" + sortBy);
+        Log.d(TAG, "createUrl: what is sortBy??" + SORT_BY_ID);
         return url;
     }
 

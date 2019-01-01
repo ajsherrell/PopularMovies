@@ -71,12 +71,12 @@ public class MainActivity extends AppCompatActivity
         // attach adapter to recyclerView
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        loadMovieData(SORT_BY_ID);
+        onStart();
     }
 
-    private static void loadMovieData(String sortOrder) {
+    private static void loadMovieData() {
         showMoviePosterData();
-        new FetchMovieTask().execute(sortOrder);
+        new FetchMovieTask().execute();
     }
 
     private static void showMoviePosterData() {
@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onStart() {
-        loadMovieData(SORT_BY_ID);
+        loadMovieData();
         super.onStart();
     }
 
@@ -167,12 +167,15 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
             case R.id.action_refresh:
                 createUrl(SORT_BY_ID);
+                onStart();
                 break;
             case R.id.action_popular:
                 createUrl(SORT_BY_POPULAR);
+                onStart();
                 break;
             case R.id.action_rating:
                 createUrl(SORT_BY_RATING);
+                onStart();
                 break;
             default:
                 return true;
