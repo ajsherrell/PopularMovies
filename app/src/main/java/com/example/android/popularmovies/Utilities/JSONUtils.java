@@ -2,12 +2,10 @@ package com.example.android.popularmovies.Utilities;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.android.popularmovies.BuildConfig;
-import com.example.android.popularmovies.MainActivity;
 import com.example.android.popularmovies.model.Movie;
 
 import org.json.JSONArray;
@@ -41,6 +39,12 @@ public final class JSONUtils {
 
     // JSON constants
     private static final String RESULTS = "results";
+
+    public static final String POSTER_SIZE_THUMBNAIL = "185w";
+
+    public static final String POSTER_SIZE_REGULAR = "342w";
+
+    public static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
 
     // query strings
     private static final String LANGUAGE = "language";
@@ -202,7 +206,7 @@ public final class JSONUtils {
                 String plotOverview = currentMovie.getString("overview");
 
                 // extract the value for the key called "vote_count"
-                String userRating = currentMovie.getString("vote_count");
+                String userRating = currentMovie.getString("vote_average");
 
                 // extract the value for the key called "release_date"
                 String releaseDate = currentMovie.getString("release_date");

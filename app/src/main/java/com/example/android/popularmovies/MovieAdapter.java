@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.android.popularmovies.Utilities.JSONUtils;
 import com.example.android.popularmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 
@@ -81,10 +82,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public void onBindViewHolder(@NonNull MovieAdapterViewHolder holder, int position) {
         Movie currentMovie = mMovies.get(position);
+        String poster = currentMovie.getPosterThumbnail();
+        final String POSTER_URL = JSONUtils.IMAGE_BASE_URL + JSONUtils.POSTER_SIZE_REGULAR + poster;
 
-        if (!TextUtils.isEmpty(currentMovie.getPosterThumbnail())) {
+        if (!TextUtils.isEmpty(poster)) {
             Picasso.with(mContext)
-                    .load(currentMovie.getPosterThumbnail())
+                    .load(POSTER_URL.trim())
                     .placeholder(R.drawable.baseline_camera_alt_black_18dp)
                     .error(R.drawable.baseline_error_outline_black_18dp)
                     .into(holder.mImageView);

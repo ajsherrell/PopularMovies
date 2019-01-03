@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.popularmovies.Utilities.JSONUtils;
 import com.example.android.popularmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 
@@ -42,20 +43,34 @@ public class MovieDetails extends AppCompatActivity {
         Log.d(TAG, "onCreate: is not working!!!!");
         }
 
-    @Nullable
     public void populateUI() {
-        originalTitle.setText(moviePage.getOriginalTitle());
-        plotOverview.setText(moviePage.getPlotOverview());
-        userRating.setText(R.string.user_rating + moviePage.getUserRating());
-        releaseDate.setText(moviePage.getReleaseDate());
+        if (originalTitle != null) {
+            originalTitle.setText(moviePage.getOriginalTitle());
+        }
 
-        Picasso.with(this)
-                .load(moviePage.getPosterThumbnail())
-                .placeholder(R.drawable.baseline_camera_alt_black_18dp)
-                .error(R.drawable.baseline_error_outline_black_18dp)
-                .into(moviePoster);
+        if (plotOverview != null) {
+            plotOverview.setText(moviePage.getPlotOverview());
+        }
 
-        Log.d(TAG, "populateUI: is not working!!!!");
+        if (userRating != null) {
+            userRating.setText(R.string.user_rating + moviePage.getUserRating());
+        }
+
+        if (releaseDate != null) {
+            releaseDate.setText(moviePage.getReleaseDate());
+        }
+
+        String poster = moviePage.getPosterThumbnail();
+        final String POSTER_URL = JSONUtils.IMAGE_BASE_URL + JSONUtils.POSTER_SIZE_THUMBNAIL + poster;
+        if (poster != null) {
+            Picasso.with(this)
+                    .load(POSTER_URL.trim())
+                    .placeholder(R.drawable.baseline_camera_alt_black_18dp)
+                    .error(R.drawable.baseline_error_outline_black_18dp)
+                    .into(moviePoster);
+
+            Log.d(TAG, "populateUI: is not working!!!!" + moviePage);
+        }
     }
 
 }

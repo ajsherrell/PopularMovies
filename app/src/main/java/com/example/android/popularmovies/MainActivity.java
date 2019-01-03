@@ -37,9 +37,6 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private static Context context;
-
-
     private static RecyclerView mRecyclerView;
     private static MovieAdapter mMovieAdapter;
     private static TextView mErrorMessageDisplay;
@@ -56,7 +53,7 @@ public class MainActivity extends AppCompatActivity
         mProgressBar = (ProgressBar)findViewById(R.id.pb_loading_indicator);
 
 
-        GridLayoutManager layoutManager = new GridLayoutManager(context, numColumns());
+        GridLayoutManager layoutManager = new GridLayoutManager(this, numColumns());
 
         mRecyclerView.setLayoutManager(layoutManager);
 
@@ -64,7 +61,7 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView.setHasFixedSize(true);
 
         // adapter links movie data
-        mMovieAdapter = new MovieAdapter(context, this);
+        mMovieAdapter = new MovieAdapter(this, this);
 
         // attach adapter to recyclerView
         mRecyclerView.setAdapter(mMovieAdapter);
@@ -72,13 +69,12 @@ public class MainActivity extends AppCompatActivity
         onStart();
     }
 
-    private void loadMovieData() {
+    private void loadMovieData(String sortBy) {
         if (!isOnline()) {
-
+            showMoviePosterData();
+            FetchMovieTask task = (FetchMovieTask) new FetchMovieTask();
+            task.execute(sortBy);
         }
-        showMoviePosterData();
-        FetchMovieTask task = (FetchMovieTask) new FetchMovieTask();
-        task.execute();
     }
 
     private static void showMoviePosterData() {
@@ -93,13 +89,13 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onClick(List<Movie> clickedMovie) {
-        Intent intent = new Intent(context, MovieDetails.class);
+        Intent intent = new Intent(this, MovieDetails.class);
         intent.putExtra("Movie", (Parcelable) clickedMovie);
         startActivity(intent);
     }
 
     //asyncTask
-    private static class FetchMovieTask extends AsyncTask<String, Void, List<Movie>> {
+    private class FetchMovieTask extends AsyncTask<String, Void, List<Movie>> {
 
 
         @Override
@@ -113,7 +109,7 @@ public class MainActivity extends AppCompatActivity
             try {
                 String jsonMovieResponse = JSONUtils.makeHttpRequest(movieRequestUrl);
 
-                List<Movie> simpleJsonMovieData = JSONUtils.extractDataFromJson(context, jsonMovieResponse);
+                List<Movie> simpleJsonMovieData = JSONUtils.extractDataFromJson(MainActivity.this, jsonMovieResponse);
 
                 return simpleJsonMovieData;
             } catch (Exception e) {
@@ -150,7 +146,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onStart() {
-        loadMovieData();
+        loadMovieData(SORT_BY_ID);
         super.onStart();
     }
 
@@ -164,20 +160,22 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d(TAG, "onOptionsItemSelected: something is wrong!!!");
         int id = item.getItemId();
         switch (id) {
             case R.id.action_refresh:
                 createUrl(SORT_BY_ID);
                 onStart();
+                Log.d(TAG, "onOptionsItemSelected: " + SORT_BY_ID);
                 break;
             case R.id.action_popular:
                 createUrl(SORT_BY_POPULAR);
                 onStart();
+                Log.d(TAG, "onOptionsItemSelected: " + SORT_BY_POPULAR);
                 break;
             case R.id.action_rating:
                 createUrl(SORT_BY_RATING);
                 onStart();
+                Log.d(TAG, "onOptionsItemSelected: " + SORT_BY_RATING);
                 break;
             default:
                 return true;
