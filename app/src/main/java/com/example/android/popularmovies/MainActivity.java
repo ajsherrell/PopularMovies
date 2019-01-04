@@ -124,9 +124,8 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(List<Movie> moviePosters) {
-            super.onPostExecute(moviePosters);
             mProgressBar.setVisibility(INVISIBLE);
-            if (moviePosters != null && moviePosters.size() > 0) {
+            if (moviePosters != null) {
                 for (Movie movies : moviePosters) {
                     MovieAdapter.add(movies);
                 }
@@ -159,18 +158,16 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.action_refresh:
-                createUrl(SORT_BY_POPULAR);
-                onStart();
+                mMovieAdapter.add(null);
+                loadMovieData(SORT_BY_POPULAR);
                 Log.d(TAG, "onOptionsItemSelected: " + SORT_BY_POPULAR);
                 break;
             case R.id.action_popular:
-                createUrl(SORT_BY_POPULAR);
-                onStart();
+                loadMovieData(SORT_BY_POPULAR);
                 Log.d(TAG, "onOptionsItemSelected: " + SORT_BY_POPULAR);
                 break;
             case R.id.action_rating:
-                createUrl(SORT_BY_RATING);
-                onStart();
+                loadMovieData(SORT_BY_RATING);
                 Log.d(TAG, "onOptionsItemSelected: " + SORT_BY_RATING);
                 break;
             default:

@@ -22,6 +22,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public final class JSONUtils {
 
@@ -35,7 +36,7 @@ public final class JSONUtils {
     //<<<<<<<<<<<<<<<<<<< get your own api key >>>>>>>>>>>>>>>>
     private static final String API_KEY = "api_key";
 
-    private static final String MOVIE_DATABASE_BASE_URL = "https://api.themoviedb.org/3/movie/";
+    private static final String MOVIE_DATABASE_BASE_URL = "https://api.themoviedb.org/3/movie";
 
     // JSON constants
     private static final String RESULTS = "results";
@@ -84,7 +85,8 @@ public final class JSONUtils {
 
     public static URL createUrl(String sortBy) {
         //build the URI
-        Uri builtUri = Uri.parse(MOVIE_DATABASE_BASE_URL + sortBy).buildUpon()
+        Uri builtUri = Uri.parse(MOVIE_DATABASE_BASE_URL).buildUpon()
+                .appendPath(sortBy)
                 .appendQueryParameter(API_KEY, MY_API_KEY)
                 .appendQueryParameter(LANGUAGE, MY_LANGUAGE)
                 .build();
@@ -93,6 +95,7 @@ public final class JSONUtils {
         try {
             url = new URL(builtUri.toString());
         } catch (MalformedURLException e) {
+            e.printStackTrace();
             Log.d(TAG, "createUrl: Problem building the URL", e);
         }
 
@@ -109,60 +112,25 @@ public final class JSONUtils {
      * @throws IOException
      */
     public static String makeHttpRequest(URL url) throws IOException {
-        String jsonResponse = "";
+       HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+       try {
+           InputStream in = urlConnection.getInputStream();
 
-        // if the URL is null, then return early
-        if (url == null) {
-            return jsonResponse;
-        }
+           Scanner scanner = new Scanner(in);
+           scanner.useDelimiter("\\A");
 
-        HttpURLConnection urlConnection = null;
-        InputStream inputStream = null;
-        try {
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setReadTimeout(10000 /* milliseconds */);
-            urlConnection.setConnectTimeout(15000 /* milliseconds */);
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
-
-            // If the request was successful (response code 200),
-            // then read the input stream and parse the response.
-            if (urlConnection.getResponseCode() == 200) {
-                inputStream = urlConnection.getInputStream();
-                jsonResponse = readFromStream(inputStream);
-            } else {
-                Log.d(TAG, "Error response code: " + urlConnection.getResponseCode());
-            }
-        } catch (IOException e) {
-            Log.d(TAG, "Problem retrieving the earthquake JSON results.", e);
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-            if (inputStream != null) {
-                // Closing the input stream could throw an IOException, which is why
-                // the makeHttpRequest(URL url) method signature specifies than an IOException
-                // could be thrown.
-                inputStream.close();
-            }
-        }
-        return jsonResponse;
-        }
-
-        private static String readFromStream(InputStream inputStream) throws IOException {
-        StringBuilder output = new StringBuilder();
-        if (inputStream != null) {
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
-            BufferedReader reader = new BufferedReader(inputStreamReader);
-            String line = reader.readLine();
-            while (line != null) {
-                output.append(line);
-                line = reader.readLine();
-            }
-            Log.d(TAG, "readFromStream: problem with inputStream!!!!!!");
-        }
-        return output.toString();
+           boolean hasInput = scanner.hasNext();
+           if (hasInput) {
+               return scanner.next();
+           } else {
+               return null;
+           }
+       } finally {
+           urlConnection.disconnect();
+       }
     }
+
+
 
     public static List<Movie> extractDataFromJson(Context context, String moviesJSON) {
 
