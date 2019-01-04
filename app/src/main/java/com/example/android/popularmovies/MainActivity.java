@@ -26,7 +26,6 @@ import java.net.URL;
 import java.util.List;
 
 import static android.support.v7.widget.RecyclerView.*;
-import static com.example.android.popularmovies.Utilities.JSONUtils.SORT_BY_ID;
 import static com.example.android.popularmovies.Utilities.JSONUtils.SORT_BY_POPULAR;
 import static com.example.android.popularmovies.Utilities.JSONUtils.SORT_BY_RATING;
 import static com.example.android.popularmovies.Utilities.JSONUtils.createUrl;
@@ -53,7 +52,7 @@ public class MainActivity extends AppCompatActivity
         mProgressBar = (ProgressBar)findViewById(R.id.pb_loading_indicator);
 
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, numColumns());
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
 
         mRecyclerView.setLayoutManager(layoutManager);
 
@@ -66,15 +65,14 @@ public class MainActivity extends AppCompatActivity
         // attach adapter to recyclerView
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        onStart();
+        loadMovieData(SORT_BY_POPULAR);
     }
 
     private void loadMovieData(String sortBy) {
-        if (!isOnline()) {
-            showMoviePosterData();
             FetchMovieTask task = (FetchMovieTask) new FetchMovieTask();
             task.execute(sortBy);
-        }
+            showMoviePosterData();
+
     }
 
     private static void showMoviePosterData() {
@@ -97,6 +95,11 @@ public class MainActivity extends AppCompatActivity
     //asyncTask
     private class FetchMovieTask extends AsyncTask<String, Void, List<Movie>> {
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressBar.setVisibility(VISIBLE);
+        }
 
         @Override
         protected List<Movie> doInBackground(String... strings) {
@@ -120,20 +123,14 @@ public class MainActivity extends AppCompatActivity
         }
 
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mProgressBar.setVisibility(VISIBLE);
-        }
-
-
-        @Override
         protected void onPostExecute(List<Movie> moviePosters) {
+            super.onPostExecute(moviePosters);
             mProgressBar.setVisibility(INVISIBLE);
-            if (moviePosters != null) {
-                showMoviePosterData();
-;                for (Movie movies : moviePosters) {
+            if (moviePosters != null && moviePosters.size() > 0) {
+                for (Movie movies : moviePosters) {
                     MovieAdapter.add(movies);
                 }
+                showMoviePosterData();
             } else {
                 showErrorMessage();
                 Log.d(TAG, "onPostExecute: is not working!!!!!!");
@@ -146,7 +143,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onStart() {
-        loadMovieData(SORT_BY_ID);
         super.onStart();
     }
 
@@ -163,9 +159,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.action_refresh:
-                createUrl(SORT_BY_ID);
+                createUrl(SORT_BY_POPULAR);
                 onStart();
-                Log.d(TAG, "onOptionsItemSelected: " + SORT_BY_ID);
+                Log.d(TAG, "onOptionsItemSelected: " + SORT_BY_POPULAR);
                 break;
             case R.id.action_popular:
                 createUrl(SORT_BY_POPULAR);

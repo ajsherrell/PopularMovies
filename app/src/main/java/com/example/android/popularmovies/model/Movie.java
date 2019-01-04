@@ -6,15 +6,13 @@ import android.os.Parcelable;
 // used code from the Udacity AndroidFlavor example https://github.com/udacity/android-custom-arrayadapter/blob/parcelable/app/src/main/java/demo/example/com/customarrayadapter/AndroidFlavor.java
 public class Movie implements Parcelable {
 
-    private static String mMovieId;
     private String mOriginalTitle;
     private String mPosterThumbnail;
     private String mPlotOverview;
     private String mUserRating;
     private String mReleaseDate;
 
-    public Movie(String movieId, String originalTitle, String posterThumbnail, String plotOverview, String userRating, String releaseDate) {
-        this.mMovieId = movieId;
+    public Movie(String originalTitle, String posterThumbnail, String plotOverview, String userRating, String releaseDate) {
         this.mOriginalTitle = originalTitle;
         this.mPosterThumbnail = posterThumbnail;
         this.mPlotOverview = plotOverview;
@@ -23,7 +21,6 @@ public class Movie implements Parcelable {
     }
 
     public Movie(Parcel in) {
-        mMovieId = in.readString();
         mOriginalTitle = in.readString();
         mPosterThumbnail = in.readString();
         mPlotOverview = in.readString();
@@ -38,7 +35,6 @@ public class Movie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(mMovieId);
         parcel.writeString(mOriginalTitle);
         parcel.writeString(mPosterThumbnail);
         parcel.writeString(mPlotOverview);
@@ -57,14 +53,6 @@ public class Movie implements Parcelable {
             return new Movie[i];
         }
     };
-
-    public static String getMovieId() {
-        return mMovieId;
-    }
-
-    public void setMovieId(String MovieId) {
-        this.mMovieId = MovieId;
-    }
 
     public String getOriginalTitle() {
         return mOriginalTitle;

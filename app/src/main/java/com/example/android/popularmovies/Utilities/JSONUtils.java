@@ -44,7 +44,7 @@ public final class JSONUtils {
 
     public static final String POSTER_SIZE_REGULAR = "342w";
 
-    public static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
+    public static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p";
 
     // query strings
     private static final String LANGUAGE = "language";
@@ -52,19 +52,18 @@ public final class JSONUtils {
 
     public static final String SORT_BY_POPULAR = "popular";
     public static final String SORT_BY_RATING = "top_rated";
-    public static String SORT_BY_ID;
 
     //private constructor
     private JSONUtils() {}
 
     /**
      *
-     * @param requestURL get url
+     * @param sort_by get url
      * @return movies
      */
-    public static List<Movie> fetchMovieData(Context context, String requestURL) {
+    public static List<Movie> fetchMovieData(Context context, String sort_by) {
         // create URL object
-        URL url = createUrl(requestURL);
+        URL url = createUrl(sort_by);
         Log.d(TAG, "fetchMovieData is working!");
 
         // perform HTTP request to the URL and receive a JSON response back.
@@ -98,7 +97,7 @@ public final class JSONUtils {
         }
 
         Log.d(TAG, "createUrl: is this right??" + builtUri);
-        Log.d(TAG, "createUrl: what is sortBy??" + SORT_BY_ID);
+        Log.d(TAG, "createUrl: what is sortBy??" + SORT_BY_POPULAR);
         return url;
     }
 
@@ -193,9 +192,6 @@ public final class JSONUtils {
                 // get single movie at position 1 in array list
                 JSONObject currentMovie = jsonResultsArray.getJSONObject(i);
 
-                // extract the value for the key called "id"
-                SORT_BY_ID = currentMovie.getString("id");
-
                 // extract the value for the key called "original_title"
                 String originalTitle = currentMovie.getString("original_title");
 
@@ -212,7 +208,7 @@ public final class JSONUtils {
                 String releaseDate = currentMovie.getString("release_date");
 
                 // create a new {@link Movie} object with the JSON response
-                Movie moviesList = new Movie(SORT_BY_ID, originalTitle, posterThumbnail,
+                Movie moviesList = new Movie(originalTitle, posterThumbnail,
                         plotOverview, userRating, releaseDate);
 
                 // add the new {@link Movie} to the list of movies
