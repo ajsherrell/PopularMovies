@@ -12,16 +12,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public final class JSONUtils {
@@ -41,11 +37,11 @@ public final class JSONUtils {
     // JSON constants
     private static final String RESULTS = "results";
 
-    public static final String POSTER_SIZE_THUMBNAIL = "185w";
+    public static final String POSTER_SIZE_THUMBNAIL = "w185/";
 
-    public static final String POSTER_SIZE_REGULAR = "342w";
+    public static final String POSTER_SIZE_REGULAR = "w500/";
 
-    public static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p";
+    public static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
 
     // query strings
     private static final String LANGUAGE = "language";
@@ -57,31 +53,6 @@ public final class JSONUtils {
     //private constructor
     private JSONUtils() {}
 
-    /**
-     *
-     * @param sort_by get url
-     * @return movies
-     */
-    public static List<Movie> fetchMovieData(Context context, String sort_by) {
-        // create URL object
-        URL url = createUrl(sort_by);
-        Log.d(TAG, "fetchMovieData is working!");
-
-        // perform HTTP request to the URL and receive a JSON response back.
-        String jsonResponse = null;
-        try {
-            jsonResponse = makeHttpRequest(url);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.d(TAG, "fetchMovieData: something is wrong here!!!!!!");
-        }
-
-        // extract relevant fields from JSON response and create list of objects
-        List<Movie> movies = extractDataFromJson(context, jsonResponse);
-
-        // return the list of {@link Movie} objects
-        return movies;
-    }
 
     public static URL createUrl(String sortBy) {
         //build the URI
@@ -132,7 +103,7 @@ public final class JSONUtils {
 
 
 
-    public static List<Movie> extractDataFromJson(Context context, String moviesJSON) {
+    public static ArrayList<Movie> extractDataFromJson(Context context, String moviesJSON) {
 
         // if the JSON string is empty or null, then return early
         if (TextUtils.isEmpty(moviesJSON)) {
@@ -140,7 +111,8 @@ public final class JSONUtils {
         }
 
         //create an empty ArrayList to add movies to
-        List<Movie> movies = new ArrayList<>();
+        ArrayList<Movie> data = new ArrayList<>();
+        String[] movies = null;
 
         // Try to parse the JSON response string. If there's a problem with the way the JSON
         // is formatted, a JSONException exception object will be thrown.
@@ -151,6 +123,8 @@ public final class JSONUtils {
 
             // extract the array "results" key from a JSONObject
             JSONArray jsonResultsArray = baseJsonResponse.getJSONArray(RESULTS);
+
+            movies = new String[jsonResultsArray.length()];
 
             // for each movie in the jsonResultsArray, create and
             // {@link Movie} object
@@ -179,8 +153,10 @@ public final class JSONUtils {
                 Movie moviesList = new Movie(originalTitle, posterThumbnail,
                         plotOverview, userRating, releaseDate);
 
+                data.add(moviesList);
+
                 // add the new {@link Movie} to the list of movies
-                movies.add(moviesList);
+                movies[i] = String.valueOf(new ArrayList<Movie>());
                 Log.d(TAG, "extractDataFromJson: movies:" + moviesList);
             }
 
@@ -189,7 +165,7 @@ public final class JSONUtils {
             Log.d(TAG, "extractDataFromJson: problem with parsing the JSON", e);
         }
         // return list of movie data
-        return movies;
+        return data;
 
     }
 

@@ -15,7 +15,6 @@ import com.example.android.popularmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -23,18 +22,19 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     private static final String TAG = MovieAdapter.class.getSimpleName();
     private final Context mContext;
     private final MovieAdapterOnClickHandler mClickHandler;
-    private static List<Movie> mMovies = new ArrayList<>();
+    private List<Movie> movieList = new ArrayList<>();
 
     // interface for on click messages
     public interface MovieAdapterOnClickHandler {
-        void onClick(List<Movie> clickedMovie);
+        void onClick(Movie clickedMovie);
     }
 
     /**
      * create MovieAdapter
      * @param clickHandler is called when the poster is clicked.
      */
-    public MovieAdapter(Context context, MovieAdapterOnClickHandler clickHandler) {
+    public MovieAdapter(Context context, List<Movie> movies, MovieAdapterOnClickHandler clickHandler) {
+        movieList = movies;
         mClickHandler = clickHandler;
         mContext = context;
     }
@@ -55,9 +55,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
          */
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
-            List<Movie> clickedMovies = Collections.singletonList(mMovies.get(adapterPosition));
-            mClickHandler.onClick(clickedMovies);
-            Log.e(TAG, "onClick: is not working!!!!");
+            mClickHandler.onClick(movieList.get(adapterPosition));
+            Log.d(TAG, "onClick: is not working!!!!");
         }
     }
 
@@ -81,34 +80,31 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     @Override
     public void onBindViewHolder(@NonNull MovieAdapterViewHolder holder, int position) {
-        Movie currentMovie = mMovies.get(position);
-        String poster = currentMovie.getPosterThumbnail();
-        final String POSTER_URL = JSONUtils.IMAGE_BASE_URL + JSONUtils.POSTER_SIZE_REGULAR + poster;
+        Movie movie = movieList.get(position);
+        String POSTER_URL = JSONUtils.IMAGE_BASE_URL + JSONUtils.POSTER_SIZE_REGULAR + movie.getPosterThumbnail();
 
-        if (!TextUtils.isEmpty(poster)) {
+        if (!TextUtils.isEmpty(POSTER_URL)) {
             Picasso.with(mContext)
                     .load(POSTER_URL.trim())
                     .placeholder(R.drawable.baseline_camera_alt_black_18dp)
                     .error(R.drawable.baseline_error_outline_black_18dp)
                     .into(holder.mImageView);
         }
-        Log.d(TAG, "onBindViewHolder: is not working!!!!" + currentMovie.getPosterThumbnail());
+        Log.d(TAG, "onBindViewHolder: is not working!!!!" + POSTER_URL);
     }
 
     @Override
     public int getItemCount() {
-        if (mMovies == null) {
-            return 0;
-        }
-        return mMovies.size();
+        return movieList == null ? 0 : movieList.size();
     }
 
-    public static void add(Movie movies) {
-        mMovies.add(movies);
+    public void add(ArrayList<Movie> data) {
+        this.movieList = data;
+        notifyDataSetChanged();
     }
 
     public void clear() {
-        mMovies.clear();
+        movieList.clear();
     }
 
 }

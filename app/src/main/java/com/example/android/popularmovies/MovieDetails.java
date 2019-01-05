@@ -1,7 +1,6 @@
 package com.example.android.popularmovies;
 
 import android.content.Intent;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -44,22 +43,23 @@ public class MovieDetails extends AppCompatActivity {
         }
 
     public void populateUI() {
-        if (originalTitle != null) {
-            originalTitle.setText(moviePage.getOriginalTitle());
-        }
+        if (moviePage != null) {
+            if (originalTitle != null) {
+                originalTitle.setText(moviePage.getOriginalTitle());
+            }
 
-        if (plotOverview != null) {
-            plotOverview.setText(moviePage.getPlotOverview());
-        }
+            if (plotOverview != null) {
+                plotOverview.setText(moviePage.getPlotOverview());
+            }
 
-        if (userRating != null) {
-            userRating.setText(R.string.user_rating + moviePage.getUserRating());
-        }
+            if (userRating != null) {
+                userRating.setText(moviePage.getUserRating());
+            }
 
-        if (releaseDate != null) {
-            releaseDate.setText(moviePage.getReleaseDate());
+            if (releaseDate != null) {
+                releaseDate.setText(moviePage.getReleaseDate());
+            }
         }
-
         String poster = moviePage.getPosterThumbnail();
         final String POSTER_URL = JSONUtils.IMAGE_BASE_URL + JSONUtils.POSTER_SIZE_THUMBNAIL + poster;
         if (poster != null) {
