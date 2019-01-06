@@ -41,7 +41,7 @@ public final class JSONUtils {
 
     public static final String POSTER_SIZE_REGULAR = "w500/";
 
-    public static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
+    public static final String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/";
 
     // query strings
     private static final String LANGUAGE = "language";

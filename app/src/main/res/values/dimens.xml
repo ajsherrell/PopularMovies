@@ -8,4 +8,7 @@
     <dimen name="movie_poster_size">42dp</dimen>
     <dimen name="view_divider_size">1dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="card_corner_radius">5dp</dimen>
+    <dimen name="card_max_elevation">1dp</dimen>
+    <dimen name="card_elevation">1dp</dimen>
 </resources>

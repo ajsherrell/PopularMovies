@@ -157,12 +157,6 @@ public class MainActivity extends AppCompatActivity
         if (!isOnline()) return false;
         int id = item.getItemId();
         switch (id) {
-            case R.id.action_refresh:
-                mMovieAdapter.add(null);
-                loadMovieData(SORT_BY_POPULAR);
-                mMovieAdapter.clear();
-                Log.d(TAG, "onOptionsItemSelected: " + SORT_BY_POPULAR);
-                break;
             case R.id.action_popular:
                 loadMovieData(SORT_BY_POPULAR);
                 mMovieAdapter.clear();
